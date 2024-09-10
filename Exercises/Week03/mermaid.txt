@@ -1,0 +1,73 @@
+classDiagram
+    class FitnessTracker {
+        - stepCounter: StepCounter
+        - calorieCalculator: CalorieCalculator
+        - goalManager: GoalManager
+        - dataLogger: DataLogger
+        - dataTransfer: DataTransferInterface
+        + startTracking()
+        + stopTracking()
+        + updateDisplay()
+    }
+
+    class StepCounter {
+        + initializeSensor()
+        + getStepCount()
+        + resetStepCount()
+    }
+
+    class CalorieCalculator {
+        - userWeight: double
+        - userHeight: double
+        - userAge: int
+        - userGender: String
+        + setUserParameters(double weight, double height, int age, String gender)
+        + calculateCalories(int stepCount)
+        + getCaloriesBurned()
+        + resetCalories()
+    }
+
+    class GoalManager {
+        - dailyStepGoal: int
+        + setDailyStepGoal(int stepGoal)
+        + getDailyStepGoal()
+        + getGoalProgress(int currentStepCount)
+        + checkGoalAchievement(int currentStepCount)
+    }
+
+    class DataLogger {
+        + logData(LocalDate date, int stepCount, double caloriesBurned)
+        + retrieveData(LocalDate date)
+        + retrieveAllData()
+    }
+
+    class DataRecord {
+        - date: LocalDate
+        - stepCount: int
+        - caloriesBurned: double
+        + getters and setters
+    }
+
+    class DataTransferInterface {
+        + connectToExternalDevice()
+        + transferData(List<DataRecord> data)
+        + disconnectExternalDevice()
+    }
+
+    class ExternalDevice
+
+    FitnessTracker "1" o-- "1" StepCounter
+    FitnessTracker "1" o-- "1" CalorieCalculator
+    FitnessTracker "1" o-- "1" GoalManager
+    FitnessTracker "1" o-- "1" DataLogger
+    FitnessTracker "1" o-- "1" DataTransferInterface
+
+    StepCounter ..> CalorieCalculator : provides data to
+    StepCounter ..> GoalManager : provides data to
+
+    CalorieCalculator ..> FitnessTracker : uses data from
+
+    DataLogger --> DataRecord : logs data into
+
+    DataTransferInterface ..> DataLogger : accesses data from
+    DataTransferInterface --> ExternalDevice : transfers data to
